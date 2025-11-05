@@ -81,6 +81,51 @@ python src/train.py --data_dir data/sample --metadata_path data/sample/metadata.
 python src/evaluate.py --checkpoint_path checkpoints/best_model.pt --data_dir data/sample --metadata_path data/sample/metadata.json
 ```
 
+### Eğitim Parametreleri
+
+- `--n_way`: Episode başına sınıf sayısı (varsayılan: 5)
+- `--k_shot`: Sınıf başına destek örnek sayısı (varsayılan: 5)
+- `--n_query`: Sınıf başına sorgu örnek sayısı (varsayılan: 15)
+- `--epochs`: Eğitim epoch sayısı (varsayılan: 50)
+- `--lr`: Öğrenme oranı (varsayılan: 0.001)
+- `--embedding_dim`: Embedding boyutu (varsayılan: 128)
+- `--use_clinical`: Klinik veri kullanımını etkinleştir
+
+## 🔬 Model Mimarisi
+
+### Prototypical Network
+
+- **Encoder**: Pre-trained ResNet-50 (ImageNet) backbone
+- **Embedding Space**: L2-normalized 128-dimensional embeddings
+- **Prototype Computation**: Sınıf başına destek örneklerinin ortalaması
+- **Classification**: Euclidean distance tabanlı sınıflandırma
+
+### Multi-Modal Fusion (Opsiyonel)
+
+- **Clinical Encoder**: Yaş, cinsiyet, tümör evresi, genetik mutasyonlar için embedding
+- **Fusion Layer**: Görüntü ve klinik embedding'lerin birleştirilmesi
+
+## 📊 Veri Formatı
+
+### Metadata JSON Yapısı
+
+```json
+{
+  "cancer_type_name": [
+    {
+      "image_id": "unique_id",
+      "cancer_type": "cancer_type_name",
+      "image_path": "path/to/image.png",
+      "age": 55,
+      "gender": "M",
+      "tumor_stage": "II",
+      "genetic_mutation": "BRAF",
+      "tumor_size_mm": 35.5
+    }
+  ]
+}
+```
+
 ## ⚖️ Etik İlkeler
 
 - Gerçek hasta verisi yalnızca kamuya açık anonim kaynaklardan alınır
@@ -88,6 +133,23 @@ python src/evaluate.py --checkpoint_path checkpoints/best_model.pt --data_dir da
 - Proje araştırma ve eğitim amaçlıdır, klinik karar verme aracı değildir
 - Veri paylaşımı ve model çıktıları açık lisans altında yayınlanır
 
+## 📚 Referanslar
+
+- Snell, J., Swersky, K., & Zemel, R. (2017). Prototypical networks for few-shot learning. NeurIPS.
+- Vinyals, O., et al. (2016). Matching networks for one shot learning. NeurIPS.
+
 ## 📝 Lisans
 
-Bu proje MIT lisansı altında lisanslanmıştır.
+Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
+
+## 🤝 Katkıda Bulunma
+
+Katkılarınızı bekliyoruz! Lütfen pull request göndermeden önce kod standartlarına uyduğunuzdan emin olun.
+
+## 📧 İletişim
+
+Sorularınız için issue açabilirsiniz.
+
+---
+
+**Not**: Bu proje araştırma ve eğitim amaçlıdır. Gerçek klinik uygulamalarda kullanılmadan önce kapsamlı validasyon gereklidir.
